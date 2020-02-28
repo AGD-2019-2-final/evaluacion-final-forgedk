@@ -27,3 +27,8 @@ fs -rm -f -r output;
 -- 
 --  >>> Escriba su respuesta a partir de este punto <<<
 -- 
+lines = LOAD 'truck_event_text_partition.csv'  using PigStorage(',') AS (driverId:int,truckId:int,eventTime:chararray,eventType:chararray,longitude:double,latitude:double,eventKey:chararray,correlationId:chararray,driverName:chararray,routeId:long,routeName:chararray,eventDate:chararray);
+firts10registers = LIMIT lines 10;
+ordenado = ORDER firts10registers BY driverId,truckId,eventTime;
+selectRegister = Foreach ordenado GENERATE CONCAT((chararray)$0, ',',(chararray)$1, ',',(chararray)$2); 
+STORE selectRegister INTO 'output';

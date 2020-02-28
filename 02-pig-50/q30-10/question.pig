@@ -41,3 +41,27 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+U_times = FOREACH u GENERATE birthday
+,ToString(ToDate(birthday), 'dd')
+,ToString(ToDate(birthday), 'd')
+,CASE LOWER(ToString(ToDate(birthday), 'EEE'))
+	WHEN 'thu' THEN 'jue'
+	WHEN 'sun' THEN 'dom'
+	WHEN 'wed' THEN 'mie'
+	WHEN 'fri' THEN 'vie'
+	WHEN 'mon' THEN 'lun'
+	WHEN 'tue' THEN 'mar'
+	ELSE (LOWER(ToString(ToDate(birthday), 'EEE')))
+END
+,CASE LOWER(ToString(ToDate(birthday), 'EEEEE'))
+	WHEN 'thursday' THEN 'jueves'
+	WHEN 'sunday' THEN 'domingo'
+	WHEN 'wednesday' THEN 'miercoles'
+	WHEN 'friday' THEN 'viernes'
+	WHEN 'monday' THEN 'lunes'
+	WHEN 'tuesday' THEN 'martes'
+	ELSE (LOWER(ToString(ToDate(birthday), 'EEEEE')))
+END;
+
+
+STORE  U_times INTO'output'  USING PigStorage(',');

@@ -28,3 +28,7 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+u_color = Foreach u Generate firstname,color;
+u_colorfiltro = Filter u_color BY  (color matches '^[^b].*');
+u_colorfiltroLetras = FOREACH u_colorfiltro GENERATE CONCAT(firstname,',',color);
+STORE u_colorfiltroLetras INTO 'output';

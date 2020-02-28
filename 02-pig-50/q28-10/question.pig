@@ -23,10 +23,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
     AS (id:int, 
         firstname:CHARARRAY, 
         surname:CHARARRAY, 
-        birthday:CHARARRAY, 
+        birthday:DATETIME, 
         color:CHARARRAY, 
         quantity:INT);
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
-
+U_ia_location = FOREACH u GENERATE GetYear(birthday),SUBSTRING((CHARARRAY)GetYear(birthday),2,4) AS birhtday1;
+U_concat = FOREACH U_ia_location GENERATE CONCAT((CHARARRAY)$0,',',(CHARARRAY)$1);
+STORE  U_concat INTO'output';

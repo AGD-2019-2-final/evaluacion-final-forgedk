@@ -24,3 +24,15 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS TablaExplode;
+
+
+Create TABLE TablaExplode AS 
+SELECT  c1,key as valor  FROM t0 LATERAL VIEW  explode(c3)  tabla AS key,value;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT valor,COUNT(*)
+FROM TablaExplode GROUP BY valor;  
+ 

@@ -9,4 +9,8 @@ fs -rm -f -r output;
 --  >>> Escriba el codigo del mapper a partir de este punto <<<
 -- 
 
+lines = LOAD 'data.tsv'  using PigStorage('\t') AS (id:chararray,date:chararray,numero:int);
+ordenado = ORDER lines BY id,numero ASC;
+STORE ordenado INTO 'output';
+
 

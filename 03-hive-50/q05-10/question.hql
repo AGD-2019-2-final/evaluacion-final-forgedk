@@ -40,3 +40,10 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS TablaExplode;
+
+Create TABLE TablaExplode AS  SELECT  letra , YEAR(c4) AS Tiempo FROM tbl0 LATERAL VIEW  explode(c5)  adTable AS letra;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT  Tiempo,letra,COUNT(*)  FROM TablaExplode GROUP BY Tiempo,letra ORDER BY Tiempo,letra;

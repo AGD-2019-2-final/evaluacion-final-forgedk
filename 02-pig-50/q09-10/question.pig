@@ -29,3 +29,6 @@ fs -rm -f -r output;
 --
 
 
+lines = LOAD 'data.csv'  using PigStorage(',') AS (id:int,nombre:chararray,apellindo:chararray,fecha:chararray,color:chararray,numero:chararray);
+linesConcat = Foreach lines GENERATE CONCAT(nombre, '@',apellindo); 
+STORE linesConcat INTO 'output';

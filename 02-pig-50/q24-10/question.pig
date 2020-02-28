@@ -26,3 +26,6 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+u_birthday= Foreach u Generate birthday;
+u_birthdayFiltro= FOREACH u_birthday GENERATE 		SUBSTRING(REGEX_EXTRACT(birthday, '-..-',0),1,3);
+STORE  u_birthdayFiltro INTO'output';

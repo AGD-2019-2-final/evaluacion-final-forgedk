@@ -26,3 +26,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+lines = LOAD 'data.csv'  using PigStorage(',') AS (id:int,nombre:chararray,apellindo:chararray,fecha:chararray,color:chararray,numero:chararray);
+linesConcat = Foreach lines GENERATE apellindo, (chararray)SIZE(apellindo); 
+linesOutput =  ORDER linesConcat  By  $1 DESC,$0;
+linesOutput =  Foreach linesOutput  GENERATE CONCAT($0,',',$1);
+linesOutput = LIMIT   linesOutput 5;
+STORE linesOutput INTO 'output';

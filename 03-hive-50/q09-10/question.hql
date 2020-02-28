@@ -39,3 +39,19 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+DROP TABLE IF EXISTS TablaExplode;
+
+
+Create TABLE TablaExplode AS 
+SELECT  c1,key,valueInArray as value
+FROM tbl1 lateral view explode(c4) explosion as  key,valueInArray;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT tabla1.c1,tabla1.c2, tabla2.value
+FROM tbl0 tabla1 
+ LEFT OUTER JOIN TablaExplode tabla2
+ON (tabla2.c1 = tabla1.c1) AND (tabla2.key = tabla1.c2);

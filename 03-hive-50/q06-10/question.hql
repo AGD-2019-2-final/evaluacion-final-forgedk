@@ -41,3 +41,27 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 
 
+
+DROP TABLE IF EXISTS TablaExplode;
+DROP TABLE IF EXISTS TablaNumeroColumna;
+DROP TABLE IF EXISTS temporal;
+
+Create TABLE TablaNumeroColumna AS 
+SELECT  ROW_NUMBER() over() as id,c5
+FROM tbl0;
+
+
+
+Create TABLE TablaExplode AS 
+SELECT  id,UPPER(val) as value
+FROM TablaNumeroColumna  lateral view explode(c5) explosion as  val;
+
+
+Create TABLE temporal AS 
+SELECT id,collect_list(value) as coleccion
+FROM TablaExplode GROUP BY id ORDER BY id DESC;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT coleccion FROM temporal;

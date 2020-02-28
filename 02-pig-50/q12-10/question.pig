@@ -33,3 +33,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+filterU = FILTER u BY ( STARTSWITH(surname,'D') OR STARTSWITH(surname,'E') OR STARTSWITH(surname,'F') OR STARTSWITH(surname,'G') OR STARTSWITH(surname,'H') OR STARTSWITH(surname,'I') OR STARTSWITH(surname,'J') OR STARTSWITH(surname,'K'));
+
+
+surename = FOREACH filterU Generate surname;
+
+STORE surename INTO 'output';

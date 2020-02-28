@@ -39,4 +39,10 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+DROP TABLE IF EXISTS TablaExplode;
 
+Create TABLE TablaExplode AS  SELECT  explode(c5)  AS explorador  FROM tbl0;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT  DISTINCT explorador   FROM TablaExplode ORDER BY explorador;

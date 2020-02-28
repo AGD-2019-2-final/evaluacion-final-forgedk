@@ -12,3 +12,8 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+lines = LOAD 'data.tsv'  using PigStorage('\t') AS (id:chararray,bolsaLetras:bag{},mapasLista:map[]);
+linesMapa = foreach lines GENERATE id, COUNT(bolsaLetras),SIZE(mapasLista); 
+linesOrder = ORDER  linesMapa by $0,$1,$2;
+linesConcant = Foreach linesOrder GENERATE CONCAT((chararray)$0, ',',(chararray)$1, ',',(chararray)$2); 
+STORE linesConcant INTO 'output';

@@ -38,3 +38,6 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+u_order = ORDER u by surname;
+response = foreach u_order GENERATE CONCAT(UCFIRST(surname),',',UPPER(surname),',',LOWER(surname));
+STORE response INTO 'output';

@@ -27,4 +27,16 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE TablaExplode;
 
+Create TABLE TablaExplode AS 
+SELECT  key,valorArreglo
+FROM t0 
+lateral view explode(c3) explosion as  key,valueInArray  
+lateral view explode(c2) explosion as  valorArreglo;
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT  valorArreglo,key,COUNT(*) 
+FROM TablaExplode  GROUP BY valorArreglo,key ORDER BY valorArreglo,key;

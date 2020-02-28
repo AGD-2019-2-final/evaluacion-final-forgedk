@@ -14,3 +14,8 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+lines = LOAD 'data.tsv'  using PigStorage('\t') AS (id:chararray,bolsaLetras:bag{},mapasLista:map[]);
+linesMapa = foreach lines GENERATE FLATTEN(bolsaLetras),FLATTEN(mapasLista); 
+grouped = GROUP linesMapa BY ($0,$1);
+linesCount = FOREACH grouped GENERATE group, COUNT(linesMapa);
+STORE linesCount INTO 'output';

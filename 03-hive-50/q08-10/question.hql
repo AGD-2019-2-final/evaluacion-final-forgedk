@@ -41,4 +41,16 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS TablaExplode;
 
+
+Create TABLE TablaExplode AS 
+SELECT  c2,valueInArray as value
+FROM tbl0  lateral view explode(c6) explosion as  key,valueInArray;
+
+
+INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+SELECT  c2,SUM(value) as ColectionB
+FROM TablaExplode  GROUP BY c2;

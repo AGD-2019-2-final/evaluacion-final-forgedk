@@ -40,3 +40,18 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+U_times = FOREACH u GENERATE birthday
+,CASE LOWER(ToString(ToDate(birthday), 'MMM'))
+	WHEN 'apr' THEN 'abr'
+	WHEN 'jan' THEN 'ene'
+	WHEN 'dec' THEN 'dic'
+	WHEN 'aug' THEN 'ago'
+	ELSE (LOWER(ToString(ToDate(birthday), 'MMM')))
+END
+,ToString(ToDate(birthday), 'MM')
+,ToString(ToDate(birthday), 'M');
+
+U_concat = FOREACH U_times GENERATE CONCAT((CHARARRAY)$0,',',(CHARARRAY)$1,',',(CHARARRAY)$2,',',$3);
+
+
+STORE  U_concat INTO'output';
